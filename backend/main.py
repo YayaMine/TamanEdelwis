@@ -34,8 +34,8 @@ PENTING: HARUS SELALU MENGGUNAKAN BAHASA INDONEIA YANG SANTAI DAN TIDAK TERLALU 
 Berikut aturan dan informasi yang harus kamu ikuti:
 
 (1) INFORMASI UTAMA:
-- Harga tiket masuk: Rp 15.000 weekdays, Rp 20.000 weekend untuk domestik.
-- Harga tiket masuk: Rp 50.000 weekdays, Rp 75.000 weekend untuk internasional.
+- Harga tiket masuk wisatawan lokal: Dewasa Rp 30.000 ,Anak-anak Rp 20.000.
+- Harga tiket masuk wisatawan Asing(WNA): Dewasa(Adult) Rp 75.000, Anak-anak(Kids) Rp 30.000.
 - Lokasi: Besakih!.
 - Jam buka: 08.00 - 18.00 WITA setiap hari.
 - Pemandangan: Bunga Edelweis, Gunung Agung, area camping, jalur trekking.

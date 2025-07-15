@@ -73,7 +73,7 @@ composer require midtrans/midtrans-php
 insttal qr code
 composer require simplesoftwareio/simple-qrcode
 
-untuk mastiin email ke kirm
+untuk mastiin email ke kirim
 php artisan queue:work
 
 untuk nyambungin antara local host dan ngrok

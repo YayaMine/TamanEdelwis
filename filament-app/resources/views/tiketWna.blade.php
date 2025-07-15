@@ -4,6 +4,7 @@
     @include('components.header')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 </head>
 
 <body class="overflow-hidden">
@@ -21,7 +22,7 @@
                 <!-- Sub Judul -->
                 <div class="mb-3 font-bold text-[18px] text-center md:text-left">Chose Ticket</div>
 
-                <form action="{{ route('transaksi.store') }}" method="POST" onsubmit="return validateForm()">
+                <form id="payment-form" action="{{ route('transaksi.store') }}" method="POST">
                     @csrf
                     <div class="flex flex-col gap-6">
                         <!-- Tiket Container -->
@@ -156,35 +157,104 @@
 
         function updateTotal() {
             const adult = parseInt(document.getElementById('adult').value) || 0;
-            const kids  = parseInt(document.getElementById('kids').value)  || 0;
+            const kids = parseInt(document.getElementById('kids').value) || 0;
             const total = adult * 50000 + kids * 30000;
 
-            document.getElementById('total-container').textContent = total > 0 ? 'Rp ' + total.toLocaleString('id-ID') : 'Total';
+            const totalContainer = document.getElementById('total-container');
+            if (total > 0) {
+                totalContainer.textContent = 'Total: Rp ' + total.toLocaleString('id-ID');
+            } else {
+                totalContainer.textContent = 'Total';
+            }
 
-            const hidden = document.getElementById('total_purchase_input');
-            hidden.value = total;
-            hidden.dispatchEvent(new Event('input'));
-}
-
+            const hiddenTotal = document.getElementById('total_purchase_input');
+            hiddenTotal.value = total;
+            hiddenTotal.dispatchEvent(new Event('input'));
+        }
 
         document.getElementById('adult').addEventListener('input', updateTotal);
         document.getElementById('kids').addEventListener('input', updateTotal);
 
         flatpickr("#tanggal", {
             minDate: "today",
-            dateFormat: "Y-m-d"
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "d F Y",
         });
 
-        function validateForm() {
+
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Mencegah form submit secara default
+
+            // Validasi frontend sebelum mengirim ke server
             const tanggal = document.getElementById('tanggal').value.trim();
             const adult = parseInt(document.getElementById('adult').value) || 0;
             const kids = parseInt(document.getElementById('kids').value) || 0;
+            const phone_number = document.getElementById('phone_number').value.trim();
 
-            if (!tanggal || (adult === 0 && kids === 0)) {
-                alert("Harap lengkapi tanggal dan jumlah tiket minimal 1.");
-                return false;
+            if (!phone_number) {
+                 alert("Harap isi nomor telepon.");
+                 return;
             }
-    return true;
-}
+            if (!tanggal) {
+                 alert("Harap pilih tanggal kunjungan.");
+                 return;
+            }
+            if (adult === 0 && kids === 0) {
+                alert("Jumlah tiket minimal 1.");
+                return;
+            }
+
+            // Kirim data ke backend untuk mendapatkan Snap Token
+            fetch('{{ route("transaksi.store") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    adult: adult,
+                    kids: kids,
+                    phone_number: phone_number,
+                    tanggal: tanggal,
+                    Category: document.getElementById('Category').value,
+                    total_purchase: document.getElementById('total_purchase_input').value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snapToken) {
+                    // Jika token diterima, buka popup pembayaran Midtrans
+                    window.snap.pay(data.snapToken, {
+                        onSuccess: function(result){
+                            alert("Pembayaran berhasil!"); console.log(result);
+                            window.location.href = '/';
+                        },
+                        onPending: function(result){
+
+                            alert("Menunggu pembayaran Anda!"); console.log(result);
+                            window.location.href = '/tiket-saya'; // Ganti dengan URL halaman status transaksi
+                        },
+                        onError: function(result){
+                            /* Anda dapat menambahkan logika di sini, misalnya menampilkan pesan error */
+                            alert("Pembayaran gagal!"); console.log(result);
+                        },
+                        onClose: function(){
+                            /* Dijalankan saat pelanggan menutup popup pembayaran tanpa menyelesaikan proses */
+                            alert('Anda menutup popup tanpa menyelesaikan pembayaran');
+                        }
+                    });
+                } else if (data.error) {
+                    // Jika ada error dari backend
+                    alert('Error: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            });
+        });
+
     </script>
 </body>

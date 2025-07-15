@@ -140,7 +140,6 @@
     </div>
 
     <script>
-        // Fungsi changeQty dan updateTotal tidak perlu diubah, sudah benar.
         function changeQty(id, delta) {
             const input = document.getElementById(id);
             let val = parseInt(input.value) || 0;

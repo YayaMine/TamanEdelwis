@@ -1,5 +1,5 @@
 <header class="fixed inset-x-0 top-0 z-50 backdrop-blur-sm">
-    <nav class="flex items-center justify-between p-6 lg:px-14" aria-label="Global">
+    <nav class="flex items-center justify-between p-2 lg:px-14" aria-label="Global">
       <div class="flex lg:flex-1">
         <a href="{{ url('/#') }}" class="-m-1.5 p-1.5">
           <span class="sr-only">d</span>
@@ -10,9 +10,10 @@
         </a>
       </div>
       <div class="flex lg:hidden">
-        <button type="button" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700">
+        <!-- MOBILE ONLY: Tombol menu hamburger -->
+        <button type="button" id="mobileMenuButton" class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-[#2C3930] hover:bg-gray-100">
           <span class="sr-only">Open main menu</span>
-          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+          <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
           </svg>
         </button>
@@ -34,7 +35,6 @@
                 Register
             </a>
         @endguest
-
         @auth
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
@@ -44,38 +44,161 @@
             </form>
         @endauth
     </div>
-    </nav>
-    <!-- Mobile menu, show/hide based on menu open state. -->
-    <div class="lg:hidden" role="dialog" aria-modal="true">
-      <!-- Background backdrop, show/hide based on slide-over state. -->
-      <div class="fixed inset-0 z-50"></div>
-      <div class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-        <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">Your Company</span>
-            <img class="h-8 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="">
-          </a>
-          <button type="button" class="-m-2.5 rounded-md p-2.5 text-gray-700">
-            <span class="sr-only">Close menu</span>
-            <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div class="mt-6 flow-root">
-          <div class="-my-6 divide-y divide-gray-500/10">
-            <div class="space-y-2 py-6">
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Home</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">About</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Location</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Ticket</a>
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Galery</a>
+    <div id="mobileMenu" class="lg:hidden hidden absolute top-[4.5rem] left-0 w-full z-50" role="dialog" aria-modal="true">
+      <div class="fixed inset-0 bg-black/30 transition-opacity"></div>
+      <div class="relative mx-4 bg-white shadow-lg rounded-lg transform transition-transform origin-top">
+        <button type="button" id="closeMenuButton" class="absolute -right-2 -top-2 p-1 rounded-full bg-white shadow-md text-[#2C3930] hover:bg-gray-100">
+          <span class="sr-only">Close menu</span>
+          <svg class="size-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="max-h-[calc(100vh-8rem)] overflow-y-auto px-6 py-8">
+          <div class="divide-y divide-gray-500/10">
+            <div class="grid gap-3">
+              <a href="{{ url('/#') }}"
+                 class="{{ request()->is('/') ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-2 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Home</span>
+                     @if(request()->is('/'))
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
+              <a href="{{ url('/#about') }}"
+                 class="{{ request()->segment(1) === 'about' ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>About</span>
+                     @if(request()->segment(1) === 'about')
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
+              <a href="{{ url('/#location') }}"
+                 class="{{ request()->segment(1) === 'location' ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Location</span>
+                     @if(request()->segment(1) === 'location')
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
+              <a href="{{ url('/#gallery') }}"
+                 class="{{ request()->segment(1) === 'gallery' ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Gallery</span>
+                     @if(request()->segment(1) === 'gallery')
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
+              <a href="{{ url('/#ticket') }}"
+                 class="{{ request()->segment(1) === 'ticket' ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Ticket</span>
+                     @if(request()->segment(1) === 'ticket')
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
             </div>
-            <div class="py-6">
-              <a href="#" class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log in</a>
+            <div class="pt-6 pb-2 space-y-3">
+              <a href="{{ url('/login') }}"
+                 class="{{ request()->is('login') ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Login</span>
+                     @if(request()->is('login'))
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
+              <a href="{{ url('/register') }}"
+                 class="{{ request()->is('register') ? 'bg-gray-100 text-[#2C3930]' : '' }} block rounded-lg px-4 py-3 text-base font-semibold text-gray-900 hover:bg-gray-50 hover:text-[#2C3930] transition-colors">
+                 <div class="flex items-center justify-between">
+                     <span>Register</span>
+                     @if(request()->is('register'))
+                         <div class="w-1 h-6 bg-[#2C3930]"></div>
+                     @endif
+                 </div>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </header>
+</nav>
+<script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const closeMenuButton = document.getElementById('closeMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const mobileMenuContent = mobileMenu.querySelector('.transform');
+
+            function toggleMenu() {
+                const isHidden = mobileMenu.classList.contains('hidden');
+
+                // Toggle visibility
+                if (isHidden) {
+                    // Opening
+                    mobileMenu.classList.remove('hidden');
+                    document.body.classList.add('overflow-hidden');
+
+                    // Add fade-in animation to backdrop
+                    const backdrop = mobileMenu.querySelector('.fixed');
+                    backdrop.classList.add('fade-in');
+
+                    // Start with menu scaled to 0
+                    mobileMenuContent.style.transform = 'scaleY(0)';
+                    mobileMenuContent.style.opacity = '0';
+                    // Force browser to acknowledge the previous transform
+                    mobileMenuContent.offsetHeight;
+                    // Animate to full scale
+                    mobileMenuContent.style.transform = 'scaleY(1)';
+                    mobileMenuContent.style.opacity = '1';
+                } else {
+                    // Closing
+                    mobileMenuContent.style.transform = 'scaleY(0)';
+                    mobileMenuContent.style.opacity = '0';
+                    // Wait for animation to finish before hiding
+                    setTimeout(() => {
+                        mobileMenu.classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+                        mobileMenuContent.style.transform = '';
+                        mobileMenuContent.style.opacity = '';
+                    }, 200);
+                }
+            }
+
+            mobileMenuButton.addEventListener('click', toggleMenu);
+            closeMenuButton.addEventListener('click', toggleMenu);
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideMenu = mobileMenuContent.contains(event.target);
+                const isClickOnMenuButton = mobileMenuButton.contains(event.target);
+
+                if (!isClickInsideMenu && !isClickOnMenuButton && !mobileMenu.classList.contains('hidden')) {
+                    toggleMenu();
+                }
+            });
+
+            // Handle hash-based navigation
+            function setActiveMenuItem() {
+                const hash = window.location.hash || '#';
+                const menuItems = document.querySelectorAll('a[href*="#"]');
+
+                menuItems.forEach(item => {
+                    if (item.getAttribute('href').endsWith(hash)) {
+                        item.classList.add('text-[#2C3930]', 'after:w-full');
+                    } else {
+                        item.classList.remove('text-[#2C3930]', 'after:w-full');
+                    }
+                });
+            }
+
+            // Set active menu item on page load and hash change
+            setActiveMenuItem();
+            window.addEventListener('hashchange', setActiveMenuItem);
+        });
+    </script>
+</header>
