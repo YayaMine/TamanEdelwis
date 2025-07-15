@@ -169,8 +169,11 @@ Kami akan meninjau kontribusi Anda secepatnya!
 ## 📞 Kontak
 
 Punya pertanyaan, saran, atau ingin tahu lebih banyak tentang proyek ini? Jangan ragu untuk menghubungi:
-
-* **[Nama Anda/Nama Tim Anda]** - [Alamat Email Anda / Profil LinkedIn / GitHub Anda]
+<p>
+  <a href="mailto:cahyafajarpianto@gmail.com"><img src="https://img.shields.io/badge/-Email-red?style=flat-square&logo=gmail&logoColor=white"></a>
+  <a href="https://www.linkedin.com/in/fajarpianto" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=linkedin&logoColor=white"></a>
+  <a href="https://github.com/YayaMine"><img src="https://img.shields.io/badge/-GitHub-black?style=flat-square&logo=github&logoColor=white"></a>
+</p>
 
 ## 📜 Lisensi
 
